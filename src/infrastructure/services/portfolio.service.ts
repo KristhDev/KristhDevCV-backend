@@ -1,12 +1,17 @@
+/* Env */
 import { env } from '@config/env';
 
+/* Contracts */
 import { HttpClientAdapterContract } from '@domain/contracts/adapters';
 import { PortfolioServiceContract } from '@domain/contracts/services';
 
+/* Dtos */
 import { CVDto } from '@domain/dtos/portfolio';
 
+/* Entities */
 import { SkillEntity, WorkingExperienceEntity } from '@domain/entities';
 
+/* Interfaces */
 import { CVDataResponse, HttpHeaders } from '@infrastructure/interfaces';
 
 export class PortfolioService implements PortfolioServiceContract {
@@ -14,6 +19,11 @@ export class PortfolioService implements PortfolioServiceContract {
         private readonly httpClientAdapter: HttpClientAdapterContract
     ) {}
 
+    /**
+     * Gets the CV data from the portfolio API.
+     *
+     * @return {Promise<CVDto>} The CV data.
+     */
     public async getCVData(): Promise<CVDto> {
         try {
             const url = `${ env.PORTFOLIO_API_URL }/portfolio/cv`
