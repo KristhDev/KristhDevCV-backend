@@ -5,3 +5,10 @@ export interface LoggerOptions {
     uploadLogsToService?: boolean;
     writeLogsInFile?: boolean;
 }
+
+export interface UserAgentParsed {
+    browser?: string;
+    device?: string;
+    os?: string;
+    userAgent: string;
+}
