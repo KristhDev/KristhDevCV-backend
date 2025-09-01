@@ -5,11 +5,10 @@ import cors from 'cors';
 import { env } from '@config/env';
 
 /* Contracts */
-import { LoggerAdapterContract } from '@domain/contracts/adapters';
+import { LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
 
 /* Middlewares */
-// import { authCheck } from '@auth/middlewares';
-// import { loggerRequest, loggerResponse } from './middlewares';
+import { LogRequests } from './middlewares';
 
 /* Routes */
 // import { notificationsRouter } from '@notifications/routes';
@@ -20,6 +19,7 @@ class Server {
 
     constructor(
         private readonly loggerAdapter: LoggerAdapterContract,
+        private readonly userAgentAdapter: UserAgentAdapterContract
     ) {}
 
     /**
@@ -29,17 +29,17 @@ class Server {
      * The middlewares added are:
      * - cors: handles Cross-Origin Resource Sharing
      * - express.json: parses incoming JSON requests
-     * - authCheck: handles authentication checks
+     * - logRequests: handles logging requests
      *
      * @private
      * @return {void} - No return value
      */
     private middlewares(): void {
+        const logRequests = new LogRequests(this.loggerAdapter, this.userAgentAdapter);
+
         this.app.use(cors());
         this.app.use(express.json());
-        // this.app.use(loggerRequest);
-        // this.app.use(loggerResponse);
-        // this.app.use(authCheck);
+        this.app.use(logRequests.handle);
     }
 
     /**
