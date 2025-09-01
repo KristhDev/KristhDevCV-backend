@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
@@ -14,6 +15,6 @@
     "strict": true,
     "target": "esnext",
     "types": [],
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
   }
 }
