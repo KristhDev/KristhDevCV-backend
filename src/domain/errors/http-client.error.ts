@@ -1,5 +1,7 @@
+/* Constants */
 import { httpStatus } from '@application/constants';
 
+/* Errors */
 import { BaseError } from './base.error';
 
 export interface HttpClientErrorJson {
