@@ -96,7 +96,7 @@ export class LoggerAdapter implements LoggerAdapterContract {
      */
     private messageFormat(): Logform.Format { 
         return format.printf(
-            (info) => `${ info.timestamp } [${ info.level }]  ${ info.message }`
+            (info) => `${ info.timestamp } [${ info.level }] ${ info.message }`
         );
     }
 
