@@ -31,6 +31,7 @@ class Server {
      * - cors: handles Cross-Origin Resource Sharing
      * - express.json: parses incoming JSON requests
      * - logRequests: handles logging requests
+     * - localization: handles localization
      *
      * @private
      * @return {void} - No return value
