@@ -8,29 +8,27 @@ export class LogRequests {
         private readonly userAgentAdapter: UserAgentAdapterContract
     ) {}
 
-    private onFinish(req: Request, res: Response): void {
+    private onFinish(logMessage: string, req: Request, res: Response): void {
         const userAgentHeader = req.headers['user-agent'];
         const userAgent = this.userAgentAdapter.parse(userAgentHeader!);
         const content = (res as any).content;
 
         const context = {
             ...userAgent,
-            message: content.message || 'Message not found',
-            status: content.status || 500,
+            message: content?.message || undefined,
+            status: content?.status || res.statusCode,
         }
 
-        if (content.status >= 200 && content.status < 300) this.loggerAdapter.info(content.logMessage, context);
-        else this.loggerAdapter.error(content.logMessage, context);
+        if (context.status >= 200 && context.status < 300) this.loggerAdapter.success(logMessage, context);
+        else this.loggerAdapter.error(logMessage, context);
     }
 
-    private onSendResponse(body: any, req: Request, res: Response, send: Send): Response {
-        let { status, message } = JSON.parse(body);
-        const logMessage = `${ req.method } ${ req.path }`;
+    private onSendResponse(body: any, res: Response, send: Send): Response {
+        let parsedBody = JSON.parse(JSON.stringify(body));
 
         const content = {
-            status,
-            message,
-            logMessage
+            status: parsedBody?.status || res.statusCode,
+            message: parsedBody?.message || undefined,
         }
 
         res = Object.assign(res, content);
@@ -46,8 +44,8 @@ export class LogRequests {
         this.loggerAdapter.info(logMessage, userAgent);
 
         const originalSend = res.send;
-        res.send = (body) => this.onSendResponse(body, req, res, originalSend);
-        res.on('finish', () => this.onFinish(req, res));
+        res.send = (body) => this.onSendResponse(body, res, originalSend);
+        res.on('finish', () => this.onFinish(logMessage, req, res));
 
         next();
     }
