@@ -13,7 +13,7 @@ import timestampColorize from 'winston-timestamp-colorize';
 
 import { env } from '@config/env';
 
-import { LoggerAdapterContract } from '@domain/contracts/adapters';
+import { LoggerAdapterContract, TimeAdapterContract } from '@domain/contracts/adapters';
 
 import { LoggerOptions } from '@infrastructure/interfaces';
 
@@ -47,20 +47,28 @@ export class LoggerAdapter implements LoggerAdapterContract {
     private readonly logtail: Logtail;
 
     private readonly options: LoggerOptions;
-    private readonly defaultOptions: LoggerOptions = {
-        logsDir: './logs',
-        logsFileName: `kristhdevcv-backend-${ this.loggerFormatDate(new Date()) }`,
-        renderLogsInConsole: true,
-        uploadLogsToService: false,
-        writeLogsInFile: true,
-    }
 
-    constructor (options?: LoggerOptions) {
-        this.options = { ...this.defaultOptions, ...options };
+    constructor (
+        private readonly timeAdapter: TimeAdapterContract,
+        options?: LoggerOptions
+    ) {
+        const defaultOptions = this.generateDefaultOptions();
+        this.options = { ...defaultOptions, ...options };
+
         addColors(this.customLevels.colors);
 
         this.logtail = new Logtail(env.LOGTAIL_TOKEN);
         this.logger = this.generateWinstonLogger();
+    }
+
+    private generateDefaultOptions(): LoggerOptions {
+        return {
+            logsDir: './logs',
+            logsFileName: `kristhdevcv-backend-${ this.loggerFormatDate(new Date()) }`,
+            renderLogsInConsole: true,
+            uploadLogsToService: false,
+            writeLogsInFile: true,
+        }
     }
 
     /**
@@ -70,11 +78,7 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {string} The formatted date string.
      */
     private loggerFormatDate (date: Date): string {
-        const day = date.getDay();
-        const month = date.getUTCMonth();
-        const year = date.getFullYear();
-
-        return `${ day }-${ month }-${ year }`;
+        return this.timeAdapter.format(date, 'DD-MM-YYYY');
     }
 
     /**
