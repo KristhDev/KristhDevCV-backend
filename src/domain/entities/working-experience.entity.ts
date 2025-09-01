@@ -1,3 +1,4 @@
+/* Interfaces */
 import { ModelStatus, WorkingExperienceEndpoint } from '@infrastructure/interfaces';
 
 export class WorkingExperienceEntity {
@@ -14,6 +15,12 @@ export class WorkingExperienceEntity {
         public updatedAt: string
     ) {}
 
+    /**
+     * Creates a new WorkingExperienceEntity instance from a WorkingExperienceEndpoint.
+     *
+     * @param {WorkingExperienceEndpoint} endpoint - The WorkingExperienceEndpoint to create the WorkingExperienceEntity from.
+     * @return {WorkingExperienceEntity} The created WorkingExperienceEntity instance.
+     */
     public static fromEndpoint(endpoint: WorkingExperienceEndpoint): WorkingExperienceEntity {
         return new WorkingExperienceEntity(
             endpoint.id,

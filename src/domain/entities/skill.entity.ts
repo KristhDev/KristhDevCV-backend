@@ -1,3 +1,4 @@
+/* Interfaces */
 import { ModelStatus, SkillEndpoint, SkillType } from '@infrastructure/interfaces';
 
 export class SkillEntity {
@@ -12,6 +13,12 @@ export class SkillEntity {
         public updatedAt: string
     ) {}
 
+    /**
+     * Creates a new SkillEntity instance from a SkillEndpoint.
+     *
+     * @param {SkillEndpoint} endpoint - The SkillEndpoint to create the SkillEntity from.
+     * @return {SkillEntity} The created SkillEntity instance.
+     */
     public static fromEndpoint(endpoint: SkillEndpoint): SkillEntity {
         return new SkillEntity(
             endpoint.id,
