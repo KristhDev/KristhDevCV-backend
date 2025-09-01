@@ -1,2 +1,3 @@
 export * from './logger.adapter.contract';
+export * from './http-client.adapter.contract';
 export * from './user-agent.contract';
