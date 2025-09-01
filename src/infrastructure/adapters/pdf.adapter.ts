@@ -1,12 +1,23 @@
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser, PuppeteerError } from 'puppeteer';
 import puppeteerCore, { Browser as BrowserCore } from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
+/* Env */
 import { env } from '@config/env';
 
+/* Contracts */
 import { PDFAdapterContract } from '@domain/contracts/adapters';
 
+/* Errors */
+import { PDFError } from '@domain/errors';
+
 export class PDFAdapter implements PDFAdapterContract {
+
+    /**
+     * Launches a browser instance.
+     *
+     * @return {Promise<Browser | BrowserCore>} The launched browser instance.
+     */
     private async launchBrowser (): Promise<Browser | BrowserCore> {
         if (env.APP_ENV === 'production') {
             const chromiumPath = await chromium.executablePath();
@@ -23,6 +34,12 @@ export class PDFAdapter implements PDFAdapterContract {
         });
     }
 
+    /**
+     * Generates a PDF from the given HTML content.
+     *
+     * @param {string} htmlContent The HTML content to generate the PDF from.
+     * @return {Promise<Uint8Array<ArrayBufferLike>>} The generated PDF.
+     */
     public async generate(htmlContent: string): Promise<Uint8Array<ArrayBufferLike>> {
         try {
             const browser = await this.launchBrowser();
@@ -40,7 +57,8 @@ export class PDFAdapter implements PDFAdapterContract {
             return pdfBuffer;
         } 
         catch (error) {
-            throw error;
+            const puppeteerError = error as PuppeteerError;
+            throw new PDFError(puppeteerError.message);
         }
     }
 }
