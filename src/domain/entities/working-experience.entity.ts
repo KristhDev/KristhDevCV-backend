@@ -6,9 +6,9 @@ export class WorkingExperienceEntity {
         public position: string,
         public company: string,
         public description: string,
-        public start_date: string,
-        public end_date: string | null,
-        public is_current: boolean,
+        public startDate: string,
+        public endDate: string | null,
+        public isCurrent: boolean,
         public status: ModelStatus,
         public createdAt: string,
         public updatedAt: string
