@@ -30,3 +30,9 @@ export interface UserAgentParsed {
     os?: string;
     userAgent: string;
 }
+
+export type Locale = 'en' | 'es';
+
+export interface TimeAdapterOptions {
+    locale?: Locale
+}
