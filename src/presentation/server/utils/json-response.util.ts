@@ -16,6 +16,7 @@ export class JsonResponseUtil {
     }
 
     public error(res: Response, error: unknown): void {
+        console.log(error);
         let errorData: JsonResponseData;
 
         if (error instanceof HttpClientError) errorData = error.toJSON();
