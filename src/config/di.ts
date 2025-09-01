@@ -1,8 +1,9 @@
 /* Contracts */
-import { LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
+import { HttpClientAdapterContract, LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
 
 /* Adapters */
-import { LoggerAdapter, UserAgentAdapter } from '@infrastructure/adapters';
+import { HttpClientAdapter, LoggerAdapter, UserAgentAdapter } from '@infrastructure/adapters';
 
 export const loggerAdapter: LoggerAdapterContract = new LoggerAdapter();
+export const httpClientAdapter: HttpClientAdapterContract = new HttpClientAdapter(loggerAdapter);
 export const userAgentAdapter: UserAgentAdapterContract = new UserAgentAdapter();
