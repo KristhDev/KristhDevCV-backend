@@ -1,8 +1,11 @@
+/* Contracts */
 import { TimeAdapterContract } from '@domain/contracts/adapters';
 import { CVServiceContract } from '@domain/contracts/services';
 
+/* Dtos */
 import { CVDto } from '@domain/dtos/portfolio';
 
+/* Entities */
 import { SkillEntity, WorkingExperienceEntity } from '@domain/entities';
 
 export class CVService implements CVServiceContract {
@@ -33,6 +36,11 @@ export class CVService implements CVServiceContract {
         private readonly timeAdapter: TimeAdapterContract
     ) {}
 
+    /**
+     * Generates the CSS for the CV.
+     *
+     * @return {string} The CSS for the CV.
+     */
     private cvCss(): string {
         return `
             html {
@@ -232,6 +240,12 @@ export class CVService implements CVServiceContract {
         `;
     }
 
+    /**
+     * Generates the photo column for the CV.
+     *
+     * @param {string} authorImage The author's image URL.
+     * @return {string} The generated photo column HTML.
+     */
     private generatePhotoCol(authorImage: string): string {
         return `
             <div class="photo_col">
@@ -258,6 +272,12 @@ export class CVService implements CVServiceContract {
         `;
     }
 
+    /**
+     * Generates the working experiences section for the CV.
+     *
+     * @param {WorkingExperienceEntity[]} workingExperiences The working experiences to generate the section for.
+     * @return {string} The generated working experiences section HTML.
+     */
     private generateWorkingExperiencesSection(workingExperiences: WorkingExperienceEntity[]): string {
         let template = `
             <div class="content_col__section">
@@ -289,6 +309,12 @@ export class CVService implements CVServiceContract {
         return template;
     }
 
+    /**
+     * Generates the education section for the CV.
+     *
+     * @param {typeof this.educations} educations The educations to generate the section for.
+     * @return {string} The generated education section HTML.
+     */
     private generateEducationSection(educations: typeof this.educations): string {
         let template = `
             <div class="content_col__section">
@@ -320,6 +346,12 @@ export class CVService implements CVServiceContract {
         return template;
     }
 
+    /**
+     * Generates the skills section for the CV.
+     *
+     * @param {SkillEntity[]} skills The skills to generate the section for.
+     * @return {string} The generated skills section HTML.
+     */
     private generateSkillsSection(skills: SkillEntity[]): string {
         let template = `
             <div class="content_col__section">
@@ -344,6 +376,14 @@ export class CVService implements CVServiceContract {
         return template;
     }
 
+    /**
+     * Generates the content column for the CV.
+     *
+     * @param {string} summary The summary to generate the content column for.
+     * @param {WorkingExperienceEntity[]} workingExperiences The working experiences to generate the content column for.
+     * @param {SkillEntity[]} skills The skills to generate the content column for.
+     * @return {string} The generated content column HTML.
+     */
     private generateContentCol(summary: string, workingExperiences: WorkingExperienceEntity[], skills: SkillEntity[]): string {
         const workingExperiencesSection = this.generateWorkingExperiencesSection(workingExperiences);
         const educationsSection = this.generateEducationSection(this.educations);
@@ -365,6 +405,12 @@ export class CVService implements CVServiceContract {
         `;
     }
 
+    /**
+     * Generates the CV template.
+     *
+     * @param {CVDto} cvDataDto The CV data to generate the template for.
+     * @return {string} The generated CV template HTML.
+     */
     public generateCVTemplate(cvDataDto: CVDto): string {
         const css = this.cvCss();
         const photoCol = this.generatePhotoCol(cvDataDto.authorImage);
