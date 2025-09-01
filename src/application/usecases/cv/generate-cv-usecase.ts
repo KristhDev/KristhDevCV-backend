@@ -7,9 +7,9 @@ export class GenerateCVUseCase implements GenerateCVUseCaseContract {
         private readonly cvFacade: CVFacadeContract
     ) {}
 
-    public async execute (): Promise<void> {
+    public async execute (): Promise<Uint8Array<ArrayBufferLike>> {
         try {
-            await this.cvFacade.generateCV();
+            return await this.cvFacade.generateCV();
         } 
         catch (error) {
             throw error;
