@@ -61,6 +61,11 @@ export class LoggerAdapter implements LoggerAdapterContract {
         this.logger = this.generateWinstonLogger();
     }
 
+    /**
+     * Generates the default options for the logger.
+     *
+     * @return {LoggerOptions} The default options for the logger.
+     */
     private generateDefaultOptions(): LoggerOptions {
         return {
             logsDir: './logs',
@@ -172,7 +177,9 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} This function does not return a value.
      */
     public info(message: string, context?: { [key: string]: any }): void {
-        this.logger.info(`${ message } ${ JSON.stringify(context) }`);
+        message = context ? `${ message } ${ JSON.stringify(context) }` : message;
+
+        this.logger.info(message);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
@@ -184,7 +191,9 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} This function does not return a value.
      */
     public success(message: string, context?: { [key: string]: any }): void {
-        this.logger.log('success', `${ message } ${ JSON.stringify(context) }`);
+        message = context ? `${ message } ${ JSON.stringify(context) }` : message;
+
+        this.logger.log('success', message);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
@@ -196,7 +205,9 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} 
      */
     public error(message: string, context?: { [key: string]: any }): void {
-        this.logger.error(`${ message } ${ JSON.stringify(context) }`);
+        message = context ? `${ message } ${ JSON.stringify(context) }` : message;
+
+        this.logger.error(message);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 }
