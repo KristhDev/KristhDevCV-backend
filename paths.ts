@@ -5,6 +5,7 @@ moduleAlias.addAliases({
     '@config': __dirname + '/src/config',
     '@domain': __dirname + '/src/domain',
     '@infrastructure': __dirname + '/src/infrastructure',
+    '@portfolio': __dirname + '/src/presentation/modules/portfolio',
     '@server': __dirname + '/src/presentation/server'
 });
 
