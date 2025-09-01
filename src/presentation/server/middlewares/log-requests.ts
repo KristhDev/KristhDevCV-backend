@@ -8,10 +8,6 @@ export class LogRequests {
         private readonly userAgentAdapter: UserAgentAdapterContract
     ) {}
 
-    private generateLogMessage(req: Request): string {
-        return `${ req.method } ${ req.path }`;
-    }
-
     private onFinish(req: Request, res: Response): void {
         const userAgentHeader = req.headers['user-agent'];
         const userAgent = this.userAgentAdapter.parse(userAgentHeader!);
@@ -29,7 +25,7 @@ export class LogRequests {
 
     private onSendResponse(body: any, req: Request, res: Response, send: Send): Response {
         let { status, message } = JSON.parse(body);
-        const logMessage = this.generateLogMessage(req);
+        const logMessage = `${ req.method } ${ req.path }`;
 
         const content = {
             status,
@@ -39,11 +35,11 @@ export class LogRequests {
 
         res = Object.assign(res, content);
 
-        return send.call(this, body);
+        return send.call(res, body);
     }
 
     public handle(req: Request, res: Response, next: NextFunction): void {
-        const logMessage = this.generateLogMessage(req);
+        const logMessage = `${ req.method } ${ req.path }`;
         const userAgentHeader = req.headers['user-agent'];
         const userAgent = this.userAgentAdapter.parse(userAgentHeader!);
 
