@@ -164,10 +164,11 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * Logs an informational message.
      *
      * @param {string} message - The message to be logged.
+     * @param {Object} context - The context to be logged.
      * @return {void} This function does not return a value.
      */
-    public info(message: string): void {
-        this.logger.info(message);
+    public info(message: string, context?: { [key: string]: any }): void {
+        this.logger.info(message, context);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
@@ -175,10 +176,11 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * Logs a success message.
      *
      * @param {string} message - The success message to log.
+     * @param {Object} context - The context to be logged.
      * @return {void} This function does not return a value.
      */
-    public success(message: string): void {
-        this.logger.log('success', message);
+    public success(message: string, context?: { [key: string]: any }): void {
+        this.logger.log('success', message, context);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
@@ -187,10 +189,11 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * Logs an error message.
      *
      * @param {string} message - The error message to be logged.
+     * @param {Object} context - The context to be logged.
      * @return {void} 
      */
-    public error(message: string): void {
-        this.logger.error(message);
+    public error(message: string, context?: { [key: string]: any }): void {
+        this.logger.error(message, context);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 }
