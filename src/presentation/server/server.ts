@@ -11,7 +11,7 @@ import { LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contrac
 import { LogRequests } from './middlewares';
 
 /* Routes */
-// import { notificationsRouter } from '@notifications/routes';
+import { portfolioRouter } from '@portfolio/routes';
 
 class Server {
     private port: number = Number(env.PORT || 9000);
@@ -39,7 +39,7 @@ class Server {
 
         this.app.use(cors());
         this.app.use(express.json());
-        this.app.use(logRequests.handle);
+        this.app.use((req, res, next) => logRequests.handle(req, res, next));
     }
 
     /**
@@ -49,7 +49,7 @@ class Server {
      * @return {void} - No return value
      */
     private routes(): void {
-        // this.app.use('/api/notifications', notificationsRouter);
+        this.app.use('/api/portfolio', portfolioRouter);
     }
 
     /**
