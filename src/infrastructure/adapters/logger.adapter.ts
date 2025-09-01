@@ -168,7 +168,7 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} This function does not return a value.
      */
     public info(message: string, context?: { [key: string]: any }): void {
-        this.logger.info(message, context);
+        this.logger.info(`${ message } ${ JSON.stringify(context) }`);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
@@ -180,11 +180,10 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} This function does not return a value.
      */
     public success(message: string, context?: { [key: string]: any }): void {
-        this.logger.log('success', message, context);
+        this.logger.log('success', `${ message } ${ JSON.stringify(context) }`);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 
-    
     /**
      * Logs an error message.
      *
@@ -193,7 +192,7 @@ export class LoggerAdapter implements LoggerAdapterContract {
      * @return {void} 
      */
     public error(message: string, context?: { [key: string]: any }): void {
-        this.logger.error(message, context);
+        this.logger.error(`${ message } ${ JSON.stringify(context) }`);
         if (this.options.uploadLogsToService) this.logtail.flush();
     }
 }
