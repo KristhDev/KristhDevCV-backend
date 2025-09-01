@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
+/* Constants */
 import { httpStatus } from '@application/constants';
+
+/* Utils */
 import { JsonResponseUtil } from '@server/utils';
 
 export abstract class BaseMiddleware {
