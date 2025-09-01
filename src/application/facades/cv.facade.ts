@@ -10,6 +10,11 @@ export class CVFacade implements CVFacadeContract {
         private readonly pdfAdapter: PDFAdapterContract
     ) {}
 
+    /**
+     * Generates a CV based on the provided CV data.
+     *
+     * @return {Promise<Uint8Array<ArrayBufferLike>>} The generated CV as a PDF.
+     */
     public async generateCV(): Promise<Uint8Array<ArrayBufferLike>> {
         try {
             const cvDataDto = await this.portfolioService.getCVData();
