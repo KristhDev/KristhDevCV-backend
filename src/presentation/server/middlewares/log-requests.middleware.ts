@@ -2,15 +2,19 @@ import { NextFunction, Request, Response, Send } from 'express';
 
 import { LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
 
-export class LogRequests {
+import { UserAgentParsed } from '@infrastructure/interfaces';
+
+import { BaseMiddleware } from './base.middleware';
+
+export class LogRequestsMiddleware extends BaseMiddleware {
     public constructor(
         private readonly loggerAdapter: LoggerAdapterContract,
         private readonly userAgentAdapter: UserAgentAdapterContract
-    ) {}
+    ) {
+        super();
+    }
 
-    private onFinish(logMessage: string, req: Request, res: Response): void {
-        const userAgentHeader = req.headers['user-agent'];
-        const userAgent = this.userAgentAdapter.parse(userAgentHeader!);
+    private onFinish(logMessage: string, userAgent: UserAgentParsed, req: Request, res: Response): void {
         const content = (res as any).content;
 
         const context = {
@@ -19,7 +23,7 @@ export class LogRequests {
             status: content?.status || res.statusCode,
         }
 
-        if (context.status >= 200 && context.status < 300) this.loggerAdapter.success(logMessage, context);
+        if (context.status >= this.httpStatus.OK && context.status < 300) this.loggerAdapter.success(logMessage, context);
         else this.loggerAdapter.error(logMessage, context);
     }
 
@@ -45,7 +49,7 @@ export class LogRequests {
 
         const originalSend = res.send;
         res.send = (body) => this.onSendResponse(body, res, originalSend);
-        res.on('finish', () => this.onFinish(logMessage, req, res));
+        res.on('finish', () => this.onFinish(logMessage, userAgent, req, res));
 
         next();
     }
