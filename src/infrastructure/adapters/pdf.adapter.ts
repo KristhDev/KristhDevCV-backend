@@ -45,11 +45,12 @@ export class PDFAdapter implements PDFAdapterContract {
             const browser = await this.launchBrowser();
             const page = await browser.newPage();
 
-            await page.setContent(htmlContent, { waitUntil: 'networkidle2' });
-            const height = await page.evaluate(() => document.documentElement.scrollHeight);
+            await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+            const height = await page.evaluate(() => document.body.scrollHeight);
 
             const pdfWidth = '210mm';
-            const pdfHeight = `${ height }px`;
+            const pdfHeight = `${ height + 16 }px`;
+            console.log({ height, pdfHeight });
 
             const pdfBuffer = await page.pdf({ printBackground: true, height: pdfHeight, width: pdfWidth });
             await browser.close();
