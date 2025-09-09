@@ -8,6 +8,11 @@ import { TimeAdapterContract } from '@domain/contracts/adapters';
 /* Interfaces */
 import { Locale, TimeAdapterOptions } from '@infrastructure/interfaces';
 
+localeEs.monthsShort = [
+    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+];
+
 export class TimeAdapter implements TimeAdapterContract {
     private readonly locales = {
         es: localeEs,
