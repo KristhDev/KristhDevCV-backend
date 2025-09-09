@@ -14,7 +14,7 @@ import { LogRequestsMiddleware, LocalizationMiddleware } from './middlewares';
 import { portfolioRouter } from '@portfolio/routes';
 
 class Server {
-    private port: number = Number(env.PORT || 9000);
+    private port: number = Number(env.APP_PORT || 9000);
     private app: Application = express();
 
     constructor(
