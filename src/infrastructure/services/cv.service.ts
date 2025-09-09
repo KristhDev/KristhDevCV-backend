@@ -90,16 +90,17 @@ export class CVService implements CVServiceContract {
                 aspect-ratio: 1 / 1;
                 border-radius: 999px;
                 border: 4px solid #FFFFFF;
+                margin-bottom: 2rem;
                 object-fit: cover;
                 width: 100%;
                 z-index: 2;
             }
 
             .photo_col__contact {
-                position: relative;
-                z-index: 2;
                 display: flex;
                 flex-direction: column;
+                position: relative;
+                z-index: 2;
             }
 
             .photo_col__contact h2 {
@@ -220,22 +221,21 @@ export class CVService implements CVServiceContract {
             }
 
             .content_col__section__skills {
-                margin-left: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
             }
 
-            .content_col__section__skills ul {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.25rem;
-            }
-
-            .content_col__section__skills ul li {
-                border-bottom: 1px solid #97C7E5;
-                color: #8A8B8C;
+            .content_col__section__skills__item h3 {
+                color: #2C3240;
                 font-size: 0.8rem;
-                padding-bottom: 0.25rem;
                 padding-right: 1rem;
                 width: fit-content;
+            }
+
+            .content_col__section__skills__item p {
+                color: #8A8B8C;
+                font-size: 0.8rem;
             }
         `;
     }
@@ -252,12 +252,10 @@ export class CVService implements CVServiceContract {
                 <div class="photo_col__polygon"></div>
 
                 <img 
-                    class="photo_col__img" 
                     alt="Foto de Kristhian Ferrufino"
+                    class="photo_col__img" 
                     src="${ authorImage }"
                 >
-
-                <div style="display: flex; flex: 1;"></div>
 
                 <div class="photo_col__contact">
                     <h2>Contacto</h2>
@@ -267,6 +265,7 @@ export class CVService implements CVServiceContract {
                     <p>+505 8639-4650</p>
                     <p>https://kristhdev.vercel.app</p>
                     <p>https://github.com/KristhDev</p>
+                    <p>https://www.linkedin.com/in/kristhian-ferrufino-528bb4235</p>
                 </div>
             </div>
         `;
@@ -353,22 +352,46 @@ export class CVService implements CVServiceContract {
      * @return {string} The generated skills section HTML.
      */
     private generateSkillsSection(skills: SkillEntity[]): string {
+        const skillsByTypes = {
+            languages: {
+                label: 'Lenguajes',
+                skills: skills.filter(skill => skill.type === 'language')
+            },
+            frameworks: {
+                label: 'Frameworks',
+                skills: skills.filter(skill => skill.type === 'framework')
+            },
+            databases: {
+                label: 'Bases de Datos',
+                skills: skills.filter(skill => skill.type === 'database')
+            },
+            baas: {
+                label: 'BAAS',
+                skills: skills.filter(skill => skill.type === 'baas')
+            },
+            tools: {
+                label: 'Herramientas',
+                skills: skills.filter(skill => skill.type === 'tool')
+            }
+        }
+
         let template = `
             <div class="content_col__section">
                 <h2>Habilidades</h2>
 
                 <div class="content_col__section__skills">
-                    <ul>
         `;
 
-        skills.forEach(skill => {
+        Object.values(skillsByTypes).forEach(({ label, skills }) => {
             template += `
-                <li>${ skill.name }</li>
+                <div class="content_col__section__skills__item">
+                    <h3>${ label }</h3>
+                    <p>${ skills.map(skill => skill.name).join(', ') }</p>
+                </div>
             `;
         });
 
         template += `
-                    </ul>
                 </div>
             </div>
         `;
