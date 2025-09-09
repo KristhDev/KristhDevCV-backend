@@ -1,3 +1,6 @@
+/* Env */
+import { env } from './env';
+
 /* Contracts */
 import { HttpClientAdapterContract, LoggerAdapterContract, PDFAdapterContract, TimeAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
 import { CVFacadeContract } from '@domain/contracts/facades';
@@ -17,7 +20,15 @@ import { CVFacade } from '@application/facades';
 import { GenerateCVUseCase } from '@application/usecases/cv';
 
 export const timeAdapter: TimeAdapterContract = new TimeAdapter();
-export const loggerAdapter: LoggerAdapterContract = new LoggerAdapter(timeAdapter);
+
+const isProduction = env.APP_ENV === 'production';
+
+export const loggerAdapter: LoggerAdapterContract = new LoggerAdapter(timeAdapter, {
+    renderLogsInConsole: true,
+    uploadLogsToService: isProduction,
+    writeLogsInFile: !isProduction
+});
+
 export const httpClientAdapter: HttpClientAdapterContract = new HttpClientAdapter(loggerAdapter);
 export const pdfAdapter: PDFAdapterContract = new PDFAdapter();
 export const userAgentAdapter: UserAgentAdapterContract = new UserAgentAdapter();
