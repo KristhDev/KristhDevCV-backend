@@ -57,7 +57,7 @@ export class LoggerAdapter implements LoggerAdapterContract {
 
         addColors(this.customLevels.colors);
 
-        this.logtail = new Logtail(env.LOGTAIL_TOKEN);
+        this.logtail = new Logtail(env.LOGTAIL_SOURCE_TOKEN, { endpoint: env.LOGTAIL_SOURCE_URL });
         this.logger = this.generateWinstonLogger();
     }
 
