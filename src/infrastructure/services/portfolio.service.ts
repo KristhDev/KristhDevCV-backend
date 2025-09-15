@@ -9,7 +9,7 @@ import { PortfolioServiceContract } from '@domain/contracts/services';
 import { CVDto } from '@domain/dtos/portfolio';
 
 /* Entities */
-import { SkillEntity, WorkingExperienceEntity } from '@domain/entities';
+import { EducationEntity, SkillEntity, WorkingExperienceEntity } from '@domain/entities';
 
 /* Interfaces */
 import { CVDataResponse, HttpHeaders } from '@infrastructure/interfaces';
@@ -31,16 +31,19 @@ export class PortfolioService implements PortfolioServiceContract {
 
             const data = await this.httpClientAdapter.get<CVDataResponse>(url, { headers });
 
-            const skills = data.skills.map(skill => SkillEntity.fromEndpoint(skill));
             const workingExperiences = data.working_experiences.map(
                 workingExperience => WorkingExperienceEntity.fromEndpoint(workingExperience)
             );
 
+            const educations = data.educations.map(education => EducationEntity.fromEndpoint(education));
+            const skills = data.skills.map(skill => SkillEntity.fromEndpoint(skill));
+
             return CVDto.create(
                 data.author_image,
                 data.summary,
+                workingExperiences,
+                educations,
                 skills,
-                workingExperiences
             );
         } 
         catch (error) {
