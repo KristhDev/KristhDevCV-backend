@@ -6,32 +6,9 @@ import { CVServiceContract } from '@domain/contracts/services';
 import { CVDto } from '@domain/dtos/portfolio';
 
 /* Entities */
-import { SkillEntity, WorkingExperienceEntity } from '@domain/entities';
+import { EducationEntity, SkillEntity, WorkingExperienceEntity } from '@domain/entities';
 
 export class CVService implements CVServiceContract {
-    private educations = [
-        {
-            id: 'a9102418-644c-4c83-9307-34a710b8d6b7',
-            title: 'Ingeniería en Sistemas de Computación',
-            institution: 'Universidad del Norte de Nicaragua',
-            start_date: '2019-02-01 00:00:00',
-            end_date: '2023-03-01 00:00:00',
-            is_current: false,
-            created_at: '2025-01-01 00:00:00',
-            updated_at: '2025-01-01 00:00:00',
-        },
-        {
-            id: '605b329d-de75-47d7-a4b7-095ad5466dd0',
-            title: 'Ingeniería en Sistemas de Computación',
-            institution: 'Universidad Nacional Padre Gaspar Garcia Laviana',
-            start_date: '2023-03-01 00:00:00',
-            end_date: '2024-05-01 00:00:00',
-            is_current: false,
-            created_at: '2025-01-01 00:00:00',
-            updated_at: '2025-01-01 00:00:00',
-        }
-    ];
-
     public constructor (
         private readonly timeAdapter: TimeAdapterContract
     ) {}
@@ -311,10 +288,10 @@ export class CVService implements CVServiceContract {
     /**
      * Generates the education section for the CV.
      *
-     * @param {typeof this.educations} educations The educations to generate the section for.
+     * @param {EducationEntity[]} educations The educations to generate the section for.
      * @return {string} The generated education section HTML.
      */
-    private generateEducationSection(educations: typeof this.educations): string {
+    private generateEducationSection(educations: EducationEntity[]): string {
         let template = `
             <div class="content_col__section">
                 <h2>Educación</h2>
@@ -323,9 +300,9 @@ export class CVService implements CVServiceContract {
         `;
 
         educations.forEach(education => {
-            const startDate = this.timeAdapter.format(education.start_date, 'MMM YYYY');
-            const endDateOrCurrent = (!education.is_current && education.end_date)
-                ? this.timeAdapter.format(education.end_date, 'MMM YYYY')
+            const startDate = this.timeAdapter.format(education.startDate, 'MMM YYYY');
+            const endDateOrCurrent = (!education.isCurrent && education.endDate)
+                ? this.timeAdapter.format(education.endDate, 'MMM YYYY')
                 : 'Actualidad';
 
             template += `
@@ -402,15 +379,13 @@ export class CVService implements CVServiceContract {
     /**
      * Generates the content column for the CV.
      *
-     * @param {string} summary The summary to generate the content column for.
-     * @param {WorkingExperienceEntity[]} workingExperiences The working experiences to generate the content column for.
-     * @param {SkillEntity[]} skills The skills to generate the content column for.
+     * @param {CVDto} cvDto The CV data to generate the content column for.
      * @return {string} The generated content column HTML.
      */
-    private generateContentCol(summary: string, workingExperiences: WorkingExperienceEntity[], skills: SkillEntity[]): string {
-        const workingExperiencesSection = this.generateWorkingExperiencesSection(workingExperiences);
-        const educationsSection = this.generateEducationSection(this.educations);
-        const skillsSection = this.generateSkillsSection(skills);
+    private generateContentCol(cvDto: CVDto): string {
+        const workingExperiencesSection = this.generateWorkingExperiencesSection(cvDto.workingExperiences);
+        const educationsSection = this.generateEducationSection(cvDto.educations);
+        const skillsSection = this.generateSkillsSection(cvDto.skills);
 
         return `
             <div class="content_col">
@@ -419,7 +394,7 @@ export class CVService implements CVServiceContract {
                     <p>Desarrollador Web</p>
                 </div>
 
-                <p class="content_col__section__summary">${ summary }</p>
+                <p class="content_col__section__summary">${ cvDto.summary }</p>
 
                 ${ workingExperiencesSection }
                 ${ educationsSection }
@@ -437,7 +412,7 @@ export class CVService implements CVServiceContract {
     public generateCVTemplate(cvDataDto: CVDto): string {
         const css = this.cvCss();
         const photoCol = this.generatePhotoCol(cvDataDto.authorImage);
-        const contentCol = this.generateContentCol(cvDataDto.summary, cvDataDto.workingExperiences, cvDataDto.skills);
+        const contentCol = this.generateContentCol(cvDataDto);
 
         let template = `
             <!DOCTYPE html>

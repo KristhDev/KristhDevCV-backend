@@ -50,7 +50,6 @@ export class PDFAdapter implements PDFAdapterContract {
 
             const pdfWidth = '210mm';
             const pdfHeight = `${ height + 16 }px`;
-            console.log({ height, pdfHeight });
 
             const pdfBuffer = await page.pdf({ printBackground: true, height: pdfHeight, width: pdfWidth });
             await browser.close();
