@@ -1,12 +1,13 @@
 /* Entities */
-import { SkillEntity, WorkingExperienceEntity } from '@domain/entities';
+import { EducationEntity, SkillEntity, WorkingExperienceEntity } from '@domain/entities';
 
 export class CVDto {
     private constructor (
         public authorImage: string,
         public summary: string,
-        public skills: SkillEntity[],
-        public workingExperiences: WorkingExperienceEntity[]
+        public workingExperiences: WorkingExperienceEntity[],
+        public educations: EducationEntity[],
+        public skills: SkillEntity[]
     ) {}
 
     /**
@@ -14,21 +15,24 @@ export class CVDto {
      *
      * @param {string} authorImage - The author's image.
      * @param {string} summary - The summary.
-     * @param {SkillEntity[]} skills - The skills.
      * @param {WorkingExperienceEntity[]} workingExperiences - The working experiences.
+     * @param {EducationEntity[]} educations - The educations.
+     * @param {SkillEntity[]} skills - The skills.
      * @return {CVDto} The created CVDto instance.
      */
     public static create(
         authorImage: string,
         summary: string,
+        workingExperiences: WorkingExperienceEntity[],
+        educations: EducationEntity[],
         skills: SkillEntity[],
-        workingExperiences: WorkingExperienceEntity[]
     ): CVDto {
         return new CVDto(
             authorImage,
             summary,
-            skills,
-            workingExperiences
+            workingExperiences,
+            educations,
+            skills
         );
     }
 }
