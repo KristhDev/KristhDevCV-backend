@@ -1,11 +1,11 @@
 # Build
-dist/
+/dist
 
 # Environment
 .env
 
 # Logs
-logs/
+/logs
 
 # Node.js
-node_modules/
+/node_modules
