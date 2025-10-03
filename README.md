@@ -93,6 +93,7 @@ la parte de las **notificaciones en Android.**
 |----------------------|----------------------------------------------------------|
 | APP_ENV              | Es el entorno en el que se está ejecutando la aplicación |
 | APP_PORT             | Es el puerto en el que se está ejecutando la aplicación  |
+| APP_TOKEN            | Es el token de la aplicación                             |
 | LOGTAIL_SOURCE_TOKEN | Es el token de Logtail                                   |
 | LOGTAIL_SOURCE_URL   | Es la url de la fuente de Logtail                        |
 | PORTFOLIO_API_URL    | Es la url de la api de Portfolio                         |
