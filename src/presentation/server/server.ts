@@ -5,9 +5,10 @@ import cors from 'cors';
 import { env } from '@config/env';
 
 /* Contracts */
-import { LoggerAdapterContract, TimeAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
+import { LoggerAdapterContract, TimeAdapterContract } from '@domain/contracts/adapters';
 
 /* Middlewares */
+import { CheckTokenMiddleware } from '@auth/middlewares';
 import { LogRequestsMiddleware, LocalizationMiddleware } from './middlewares';
 
 /* Routes */
@@ -19,8 +20,7 @@ class Server {
 
     constructor(
         private readonly loggerAdapter: LoggerAdapterContract,
-        private readonly timeAdapter: TimeAdapterContract,
-        private readonly userAgentAdapter: UserAgentAdapterContract,
+        private readonly timeAdapter: TimeAdapterContract
     ) {}
 
     /**
@@ -32,18 +32,21 @@ class Server {
      * - express.json: parses incoming JSON requests
      * - logRequests: handles logging requests
      * - localization: handles localization
+     * - checkToken: handles token verification
      *
      * @private
      * @return {void} - No return value
      */
     private middlewares(): void {
-        const logRequests = new LogRequestsMiddleware(this.loggerAdapter, this.userAgentAdapter);
+        const logRequests = new LogRequestsMiddleware(this.loggerAdapter);
         const localization = new LocalizationMiddleware(this.timeAdapter);
+        const checkToken = new CheckTokenMiddleware();
 
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use((req, res, next) => logRequests.handle(req, res, next));
         this.app.use((req, res, next) => localization.handle(req, res, next));
+        this.app.use((req, res, next) => checkToken.handle(req, res, next));
     }
 
     /**
