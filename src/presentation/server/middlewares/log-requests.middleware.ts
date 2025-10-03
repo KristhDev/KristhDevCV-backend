@@ -1,18 +1,17 @@
 import { NextFunction, Request, Response, Send } from 'express';
 
 /* Contracts */
-import { LoggerAdapterContract, UserAgentAdapterContract } from '@domain/contracts/adapters';
+import { LoggerAdapterContract } from '@domain/contracts/adapters';
 
-/* Interfaces */
-import { UserAgentParsed } from '@infrastructure/interfaces';
+/* Dtos */
+import { RequestContextDto } from '@domain/dtos/logs';
 
 /* Middlewares */
 import { BaseMiddleware } from './base.middleware';
 
 export class LogRequestsMiddleware extends BaseMiddleware {
     public constructor(
-        private readonly loggerAdapter: LoggerAdapterContract,
-        private readonly userAgentAdapter: UserAgentAdapterContract
+        private readonly loggerAdapter: LoggerAdapterContract
     ) {
         super();
     }
@@ -20,18 +19,18 @@ export class LogRequestsMiddleware extends BaseMiddleware {
     /**
      * Finishes the request.
      *
-     * @param {string} logMessage - The log message.
-     * @param {UserAgentParsed} userAgent - The user agent.
+     * @param {RequestContextDto} requestContextDto - The request context DTO.
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
      * @return {void} This function does not return a value.
      */
-    private onFinish(logMessage: string, userAgent: UserAgentParsed, req: Request, res: Response): void {
+    private onFinish(requestContextDto: RequestContextDto, req: Request, res: Response): void {
         const content = (res as any).content;
         const response = (res as any).response;
 
-        const respContext = { ...userAgent, ...response }
-        const context = { ...userAgent, ...content }
+        const respContext = { ...requestContextDto.toJSON(), ...response }
+        const context = { ...requestContextDto.toJSON(), ...content }
+        const logMessage = `${ requestContextDto.method } ${ requestContextDto.path }`;
 
         if (context.status >= this.httpStatus.OK && context.status < 300) this.loggerAdapter.success(logMessage, context);
         else {
@@ -62,7 +61,7 @@ export class LogRequestsMiddleware extends BaseMiddleware {
     }
 
     /**
-     * Handles the request.
+     * Middleware to log incoming requests and their responses.
      *
      * @param {Request} req - The request object.
      * @param {Response} res - The response object.
@@ -70,15 +69,13 @@ export class LogRequestsMiddleware extends BaseMiddleware {
      * @return {void} This function does not return a value.
      */
     public handle(req: Request, res: Response, next: NextFunction): void {
-        const logMessage = `${ req.method } ${ req.path }`;
-        const userAgentHeader = req.headers['user-agent'];
-        const userAgent = this.userAgentAdapter.parse(userAgentHeader!);
+        const requestContextDto = RequestContextDto.fromRequest(req);
 
-        this.loggerAdapter.info(logMessage, userAgent);
+        this.loggerAdapter.info(`${ requestContextDto.method } ${ requestContextDto.path }`, requestContextDto.toJSON());
 
         const originalSend = res.send;
         res.send = (body) => this.onSendResponse(body, res, originalSend);
-        res.on('finish', () => this.onFinish(logMessage, userAgent, req, res));
+        res.on('finish', () => this.onFinish(requestContextDto, req, res));
 
         next();
     }
